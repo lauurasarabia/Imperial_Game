@@ -1,13 +1,17 @@
-import geopandas as gdp
+import geopandas as gpd
 from pandas import json_normalize
 import requests
 import pandas as pd
+from shapely.geometry import Point
 from dotenv import load_dotenv
-from cartoframes.viz import Map, Layer, popup_element
+from cartoframes.viz import Map, Layer, popup_element, basic_style, default_legend
 import os
 import json
 from pymongo import MongoClient
 from pymongo import GEOSPHERE
+from palettable.palette import Palette
+from geopy.distance import geodesic
+
 
 def name_coordinates (dict_):
     processed_dict = {"name": dict_["name"],
@@ -15,6 +19,9 @@ def name_coordinates (dict_):
                      "lon": dict_["geocodes"]["main"]["longitude"]}
     
     return processed_dict
+
+def to_mongo(name, df):
+    df.to_json(f"/Users/lauurasarabia/Ironhack/projects/project_3_GeoSpatial/json_mongo/{name}.json")
 
 
 def schools_newmontgomery(url):
@@ -104,6 +111,20 @@ def night_newmontgomery(url):
     return pd.DataFrame(night_newmont)
 
 
+def add_geometry(df, lat_col="lat", lon_col="lon"):
+    return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lon_col], df[lat_col]))
+
+def map_newmont(offices_gdf, nmschools_gdf, strbucksnm_gdf, vegannm_gdf, basketnm_gdf, nightnm_gdf):
+    from palettable.cartocolors.diverging import TealRose_7
+    x = Map([Layer(offices_gdf, basic_style(size=15, opacity=10, color="blue"),legends=default_legend('Offices')),
+        Layer(nmschools_gdf, basic_style(size=15, color="#009392"), legends=default_legend("Schools")),
+        Layer(strbucksnm_gdf, basic_style(size=15, color="#72aaa1"), legends=default_legend("Starbucks")),
+        Layer(vegannm_gdf, basic_style(size=15, color="#e5b9ad"), legends=default_legend("VeganRestaurants")),
+        Layer(basketnm_gdf, basic_style(size=15, color="#d98994"), legends=default_legend("Basketball")),
+        Layer(nightnm_gdf, basic_style(size=15, color="#d0587e"), legends=default_legend("NightClubs"))], layer_selector=True)
+    return x
+
+
 def schools_mission(url):
     url_ = f"{url}"
     headers = {
@@ -177,6 +198,17 @@ def night_mission(url):
     for i in response.json()["results"]:
         night_miss.append(name_coordinates(i))
     return pd.DataFrame(night_miss)
+
+def map_mission(offices_gdf, schmission_gdf, strbucksmiss_gdf, veganmiss_gdf, basketmiss_gdf, nightmiss_gdf):
+    from palettable.cartocolors.diverging import Temps_7
+    y = Map([Layer(offices_gdf, basic_style(size=15, opacity=10, color="blue"),legends=default_legend('Offices')),
+        Layer(schmission_gdf, basic_style(size=15, color="#009392"), legends=default_legend("Schools")),
+        Layer(strbucksmiss_gdf, basic_style(size=15, color="#39b185"), legends=default_legend("Starbucks")),
+        Layer(veganmiss_gdf, basic_style(size=15, color="#9ccb86"), legends=default_legend("VeganRestaurants")),
+        Layer(basketmiss_gdf, basic_style(size=15, color="#e9e29c"), legends=default_legend("Basketball")),
+        Layer(nightmiss_gdf, basic_style(size=15, color="#eeb479"), legends=default_legend("NightClubs"))], layer_selector=True)
+    return y
+
 
 
 def schools_brannan(url):
@@ -253,5 +285,13 @@ def night_brannan(url):
         night_brann.append(name_coordinates(i))
     return pd.DataFrame(night_brann)
 
- 
+def map_brannan(offices_gdf, schoolsbrannan_gdf, strbcksbrannan_gdf, veganbrann_gdf, basketbrann_gdf, nightbrann_gdf):
+    from palettable.cartocolors.diverging import Tropic_7
+    z = Map([Layer(offices_gdf, basic_style(size=15, opacity=10, color="blue"),legends=default_legend('Offices')),
+        Layer(schoolsbrannan_gdf, basic_style(size=15, color="#009B9E"), legends=default_legend("Schools")),
+        Layer(strbcksbrannan_gdf, basic_style(size=15, color="#42B7B9"), legends=default_legend("Starbucks")),
+        Layer(veganbrann_gdf, basic_style(size=15, color="#A7D3D4"), legends=default_legend("VeganRestaurants")),
+        Layer(basketbrann_gdf, basic_style(size=15, color="#E4C1D9"), legends=default_legend("Basketball")),
+        Layer(nightbrann_gdf, basic_style(size=15, color="#C75DAB"), legends=default_legend("NightClubs"))], layer_selector=True)
+    return z
 
