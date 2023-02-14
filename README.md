@@ -1,6 +1,6 @@
 # GeoSpatial | Project 3
 
-Imperial Game is analyzing the environment around the world in order to choose where they will be installated at. 
+Imperial Game is analyzing the environment around the world in order to choose where they will be placed at. 
 
 On the one hand, they have used MongoDB as they had a database with all the information about other tech companies. They imported it to Jupyter Notebook for being able to work with the information. 
 After counting how many tech offices are for each city around the world, they realized that the Top 3 cities are: 
@@ -48,6 +48,6 @@ After querying through Foursquare API, these are the results for each office:
 ![brannan](https://github.com/lauurasarabia/project_3_GeoSpatial/blob/main/images/brannan.png?raw=true)
 
 
-They have decided to install their company at the New Montgomery St office, as it is the one that accomplish all of the requirements and offers more choice of them. Besides, it is the one closer to the Financial District of San Francisco. For this reason they believe this is the best option of being ideally located by both employees and company. 
+They have decided to place their company at the New Montgomery St office, as it is the one that accomplish all of the requirements and offers more choice of them. Besides, it is the one closer to the Financial District of San Francisco. For this reason they believe this is the best option of being ideally located by both employees and company. 
 
 
